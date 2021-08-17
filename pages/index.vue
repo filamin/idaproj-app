@@ -3,7 +3,9 @@
     <div class='container'>
       <Header/>
       <Form/>
-      <GoodsList/>
+      <GoodsList
+        :goods="goods"
+      />
     </div>
   </div>
 </template>
@@ -16,17 +18,8 @@ export default {
   components: {GoodsList, Form, Header},
   data() {
     return {
-      users: []
+      goods: []
     };
-  },
-  async fetch() {
-    try {
-      this.users = await this.$axios.$get("/api/users/index");
-
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
   },
 }
 </script>

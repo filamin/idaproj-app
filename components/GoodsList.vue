@@ -1,7 +1,7 @@
 <template>
 <div class="goods-list">
     <Card
-      v-for="(good, idx) in goodsList"
+      v-for="(good, idx) in goods"
       :key="`good_${idx}`"
       :src="good.src"
       :img="good.img"
@@ -17,6 +17,12 @@ import Card from "./BaseComponents/Card";
 export default {
   name: "GoodsList",
   components: {Card},
+  props: {
+    goods: {
+      type: Array,
+      default: () => [],
+    }
+  },
   data() {
     return {
       goodsList: [
@@ -89,6 +95,7 @@ export default {
   grid-gap: 16px 16px;
   overflow: scroll;
 }
+
 @media (max-width: 1400px) {
   .goods-list {
     grid-template-columns: repeat(2, 332px);

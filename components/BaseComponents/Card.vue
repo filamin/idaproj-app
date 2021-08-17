@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <div class="image">
+    <div class="image" :style="{ 'background-image': `url('${src}'), url('${require('~/assets/image-placeholder.jpeg')}')` }">
 
     </div>
     <div class="info">
@@ -38,6 +38,7 @@ export default {
   border-radius: 4px;
   display: flex;
   flex-direction: column;
+  height: fit-content;
 
   .image {
     height: 200px;
