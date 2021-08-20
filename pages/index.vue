@@ -4,7 +4,8 @@
       <Header/>
       <Form/>
       <GoodsList
-        :goods="goods"
+        :loading="loading"
+        :goods="sortedGoods"
       />
     </div>
   </div>
@@ -18,9 +19,50 @@ export default {
   components: {GoodsList, Form, Header},
   data() {
     return {
-      goods: []
+      loading: false,
+      defaultGoods: [],
+      category: "По умолчанию",
     };
   },
+  mounted() {
+    this.$bus.$on('update-goods', () => {
+      this.loadGoods();
+    });
+    this.$bus.$on('sort-goods', (category) => {
+      this.category = category;
+    })
+
+  },
+  async fetch() {
+    await this.loadGoods();
+  },
+  computed: {
+    sortedGoods() {
+      const goods = [...this.defaultGoods];
+      switch (this.category) {
+        case 'Имя':
+          return goods.sort((a, b) => a.name.charCodeAt(0) - b.name.charCodeAt(0));
+        case 'Цена (min)':
+          return goods.sort((a,b) => a.price - b.price);
+        case 'Цена (max)':
+          return goods.sort((a,b) => b.price - a.price);
+        default:
+          return goods;
+      }
+    }
+  },
+  methods: {
+    async loadGoods() {
+      try {
+        this.loading = true;
+        this.defaultGoods = await this.$axios.$get("/api/goods");
+        this.loading = false;
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+    },
+  }
 }
 </script>
 
@@ -31,7 +73,6 @@ html {
 body {
   margin: 0;
   padding: 0;
-  background: #e5e5e540;
 }
 
 .root {
@@ -39,12 +80,11 @@ body {
   width: 100vw;
 
   .container {
-    padding: 32px 32px 0;
+    padding: 32px 0 0 32px;
     display: grid;
     grid-template:
             "header header" 40px
-            "form goods-list"  calc(100vh - 32px - 40px - 16px) / auto auto;
-    grid-gap: 16px;
+            "form goods-list"  calc(100vh - 40px - 32px) / 332px auto;
   }
 }
 
@@ -53,6 +93,7 @@ body {
     .container {
       display: flex;
       flex-direction: column;
+      padding: 16px 12px 0px;
     }
   }
 }

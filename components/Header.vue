@@ -4,7 +4,9 @@
       <h2>Добавление товара</h2>
       <button @click="$bus.$emit('open-form-modal')">+</button>
     </div>
-    <Select />
+    <Select
+      @input="(val)=> $bus.$emit('sort-goods', val)"
+    />
   </div>
 </template>
 
@@ -23,6 +25,8 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 16px;
+  padding-right: 32px;
 
   .left {
     display: inline-flex;
@@ -39,11 +43,11 @@ export default {
       border: none;
       font-size: 16px;
       font-weight: bold;
-      background-color: #7BAE73;
+      background-color: #93d487;
     }
 
     button:hover {
-      background-color: #90BD86FF;
+      background-color: #5edc49;
     }
   }
 
@@ -58,6 +62,7 @@ export default {
 }
 @media (max-width: 1100px) {
   .header {
+    padding: 0;
     .left {
       button {
         display: block;

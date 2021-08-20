@@ -25,8 +25,8 @@ export default {
 
   data() {
     return {
-      options: ['Цена', 'Имя'],
-      selected: 'Цена',
+      options: ['По умолчанию', 'Цена (max)', 'Цена (min)', 'Имя'],
+      selected: 'По умолчанию',
       open: false,
     };
   },
@@ -39,11 +39,13 @@ export default {
 <style scoped lang="less">
 .custom-select {
   position: relative;
+  z-index: 3;
   width: 120px;
   text-align: left;
   outline: none;
   height: 47px;
   line-height: 47px;
+  font-size: 12px;
 }
 
 .custom-select .selected {

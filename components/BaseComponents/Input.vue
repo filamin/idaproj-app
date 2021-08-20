@@ -5,17 +5,22 @@
       <div v-if="required" class="required"></div>
     </label>
     <input
-      v-model="value"
+      v-model="internalValue"
       v-if="!showTextAria"
       :class="{'error-border': error}"
       :type="type"
       :id="id"
       :placeholder="placeholder"
-      @keypress="handleInsert"
+      @keyup.enter="() => {
+        handleInput;
+        $event.target.blur();
+        $event.target.blur();
+      }"
       @blur="handleInput"
+      @keypress="handleInsert"
     />
     <textarea
-      v-model="value"
+      v-model="internalValue"
       v-else
       :class="{'error-border': error}"
       :id="id"
@@ -33,6 +38,10 @@ export default {
     id: {
       type: String,
       required: true,
+    },
+    value: {
+      type: String,
+      default: () => '',
     },
     type: {
       type: String,
@@ -55,21 +64,29 @@ export default {
       default: () => false,
     }
   },
-  data() {
-    return {
-      value:'',
-    };
-  },
   computed: {
     showTextAria() {
       return this.type === 'textarea';
+    }
+  },
+  watch: {
+    value: {
+      immediate: true,
+      handler(val) {
+        this.internalValue = val;
+      },
+    },
+  },
+  data() {
+    return {
+      internalValue: '',
     }
   },
   methods: {
     handleInput() {
       const params = {
         id: this.id,
-        value: this.value
+        value: this.internalValue
       };
 
       this.$emit('change-value', params);

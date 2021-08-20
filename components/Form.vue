@@ -1,9 +1,16 @@
 <template>
- <div class="form" :class="{ closed: !showForm }">
-   <div class="overlay" @click="toggleForm()"></div>
-   <form>
+ <div class="form" :class="{ closed: !this.showForm }">
+   <div class="overlay" @click="toggleForm()"/>
+   <form @submit.prevent="addGood()">
+     <div class="success" :class="{ showed: this.saved }">
+       <div class="icon">
+         <div class="check"/>
+       </div>
+       Сохранено
+     </div>
      <fieldset class="inputs-container">
        <Input
+         :value="this.name"
          id="name"
          label="Наименование товара"
          placeholder="Введите наименование товара"
@@ -13,6 +20,7 @@
          @change-value="(params)=> handleChangeValue(params)"
        />
        <Input
+         :value="this.description"
          id="description"
          label="Описание товара"
          placeholder="Введите описание товара"
@@ -20,6 +28,7 @@
          @change-value="(params)=> handleChangeValue(params)"
        />
        <Input
+         :value="this.image"
          id="image"
          label="Ссылка на изображение товара"
          placeholder="Введите ссылку"
@@ -29,6 +38,7 @@
          @change-value="(params)=> handleChangeValue(params)"
        />
        <Input
+         :value="this.price"
          id="price"
          label="Цена товара"
          placeholder="Введите цену"
@@ -54,6 +64,7 @@ export default {
   },
   data() {
     return {
+      saved: false,
       showForm: false,
       name: '',
       description: '',
@@ -75,12 +86,33 @@ export default {
     toggleForm(){
       this.showForm = !this.showForm;
     },
+    clearFrom(){
+      this.name = '';
+      this.description = '';
+      this.image = '';
+      this.price = '';
+    },
     handleChangeValue(params) {
       this[params.id] = params.value;
       this.validate(params.id);
     },
     validate(param) {
       this.errors[param] = !(this[param] !== '');
+    },
+    async addGood() {
+      await this.$axios.$post("/api/goods", {
+        name: this.name,
+        description: this.description,
+        image: this.image,
+        price: this.price,
+      })
+      this.saved = true;
+      setTimeout(() => {
+        this.toggleForm();
+        this.clearFrom();
+        this.saved = false;
+        this.$bus.$emit('update-goods');
+      }, 1000)
     }
   }
 }
@@ -90,11 +122,54 @@ export default {
 .form {
   width: 332px;
   grid-area: form;
+  position: relative;
+  z-index: 3;
 
   * {
     border: none;
     margin: 0;
     padding: 0;
+  }
+
+  .success {
+    transition: all .5s linear;
+    position: absolute;
+    display: inline-flex;
+    right: 0px;
+    font-size: smaller;
+    background-color: #d9f5d5;
+    color: #4a933f;
+    border-radius: 12px;
+    padding: 4px 8px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all .5s ease-in;
+
+    &.showed {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .icon {
+      align-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      width: 12px;
+      height: 12px;
+      background-color: #4a933f;
+      margin-right: 2px;
+
+      .check {
+        display: inline-block;
+        transform: rotate(45deg);
+        height: 6px;
+        width: 3px;
+        border-bottom: 1px solid #d9f5d5;
+        border-right: 1px solid #d9f5d5;
+      }
+    }
   }
 
   .inputs-container {
@@ -140,7 +215,9 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
-
+    transition: all .2s ease-out;
+    opacity: 1;
+    visibility: visible;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -160,7 +237,8 @@ export default {
     width: 420px;
   }
   .closed {
-    display: none;
+    opacity: 0;
+    visibility: hidden;
   }
 }
 </style>
