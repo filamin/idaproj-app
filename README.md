@@ -6,13 +6,13 @@
 # Установка зависимостей
 $ npm install
 
-# Запуск сервера (Express.js и MongoDB)
+# Запуск сервера (Express.js и MongoDB) localhost:3000
 $ npm run server
 
 # Запуск сервера с nodemon
 $ npm run server-nodemon
 
-# Запуск в режиме разработки на localhost:3000
+# Запуск в режиме разработки на localhost:3001
 $ npm run dev
 
 # Сборка для production и запуск сервера Nuxt
