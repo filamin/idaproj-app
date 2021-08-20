@@ -23,4 +23,4 @@ $ npm run start
 $ npm run generate
 ```
 
-Сделано на основе [documentation](https://nuxtjs.org)
+Сделано на основе [Nuxt](https://nuxtjs.org)
