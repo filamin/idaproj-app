@@ -148,7 +148,7 @@ export default {
     p {
       font-size: 16px;
       line-height: 20px;
-      overflow: scroll;
+      overflow-y: auto;
     }
 
     h3 {
